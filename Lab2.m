@@ -1,7 +1,6 @@
 clc;
 clear all;
 close all;
-%CAN YOU SEE THIS
 %% Initialization
 dt = 0.1; %timestep
 Tf = 15; %15 seconds
