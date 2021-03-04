@@ -50,12 +50,21 @@ for t=2:length(T)
     y(:,t) = sensor_model(x_ideal(:,t)) + d;
 %     y(:,t) = sensor_model(x_ideal(:,t)) + mvnrnd(zeros(1,m),Q,1)';
 
-    v(1) = r*w*cos(x_ideal(3,t));
-    v(2) = r*w*sin(x_ideal(3,t));
+% TODO: FIX. TRYING TO REMOVE x(3) and use arctan(x(2)/x(1)) instead
+    theta = atan(x_ideal(2,t)/x_ideal(1,t));
+    v(1) = r*w*cos(theta);
+    v(2) = r*w*sin(theta);
     
-    Gt = [1, 0, -sin(x_ideal(3,t-1))/5; 
-          0, 1,  cos(x_ideal(3,t-1))/5;
-          0, 0,1];
+    Gt = [1, 0, -sin(theta)/5; 
+      0, 1,  cos(theta)/5;
+      0, 0,1];
+
+%     v(1) = r*w*cos(x_ideal(3,t));
+%     v(2) = r*w*sin(x_ideal(3,t));
+    
+%     Gt = [1, 0, -sin(x_ideal(3,t-1))/5; 
+%           0, 1,  cos(x_ideal(3,t-1))/5;
+%           0, 0,1];
     
     %Ht (poly fit)
     Ht = [(5142*x_ideal(1,t-1))/625 - 47153/10000,0,0;
