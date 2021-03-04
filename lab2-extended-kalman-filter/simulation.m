@@ -11,8 +11,10 @@ w = 5; %angular velocity
 %Errors
 %Changed to use diag. removed transpose
 %TODO: use var or sigma? do we need to take squareroot?
-R = diag([0.05,0.05,0.01]); %System noise
-Q = diag([0.00335, 0.00437]); %Measurement noise
+omega_std = 0.1 * pi / 180;
+R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) 
+Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+[RE, Re] = eig (R);
 
 % EKF Initialization
 x0 = [0 0 0]'; %initial state [x,y,theta]
@@ -39,10 +41,14 @@ mu_S = zeros(n,length(T));
 
 %% Simulation
 for t=2:length(T)
+    e = RE*sqrt(Re)*randn(n,1);
     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
-    x(:,t) = x(:,t-1) + mvnrnd(zeros(1,n),R,1)';
+    x(:,t) = x(:,t-1) + e;
+%     x(:,t) = x(:,t-1) + mvnrnd(zeros(1,n),R,1)';
     
-    y(:,t) = sensor_model(x_ideal(:,t)) + mvnrnd(zeros(1,m),Q,1)';
+    d = sqrt(Q)*randn(m,1);
+    y(:,t) = sensor_model(x_ideal(:,t)) + d;
+%     y(:,t) = sensor_model(x_ideal(:,t)) + mvnrnd(zeros(1,m),Q,1)';
 
     v(1) = r*w*cos(x_ideal(3,t));
     v(2) = r*w*sin(x_ideal(3,t));
