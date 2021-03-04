@@ -9,8 +9,7 @@ r = 0.4; %radius
 w = 5; %angular velocity
 
 %Errors
-%Changed to use diag. removed transpose
-R = diag([0.05,0.05,0.01]); %System noise
+R = diag([0.05,0.05,0.01]); %Motion noise
 Q = diag([0.00335, 0.00437]); %Measurement noise
 
 % EKF Initialization
@@ -39,18 +38,10 @@ mu_S = zeros(n,length(T));
 %% Simulation
 for t=2:length(T)
     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
+    x(:,t) = x(:,t-1) + mvnrnd(zeros(1,n),R,1)';
     
-    %TODO: replace with Hadibi/Eugene method
-%     x(1,t) = x(1,t-1) + v_x*dt + normrnd(0,R(1));
-%     x(2,t) = x(2,t-1) + v_y*dt + normrnd(0,R(2));
-%     x(3,t) = x(3,t-1) + w*dt + normrnd(0,R(3));
-    x(:,t) = x(:,t-1) + mvnrnd(zeros(n,1),Q,1)'; % Ali:changed to update entire matrix at once
+    y(:,t) = sensor_model(x_ideal(:,t)) + mvnrnd(zeros(1,m),Q,1)';
 
-    y(:,t) = sensor_model(x_ideal(:,t));
-%     y(1,t) = y(1,t) + normrnd(0,Q(1));
-%     y(2,t) = y(2,t) + normrnd(0,Q(2));
-    y(:,t) = y(:,t) + mvnrnd(zeros(m,1),R,1)';
-    
     v(1) = r*w*cos(x_ideal(3,t));
     v(2) = r*w*sin(x_ideal(3,t));
     
