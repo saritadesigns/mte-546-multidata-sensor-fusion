@@ -13,12 +13,13 @@ syms x1 x2 x3
     
     X1 = x1 + r*w*cos(theta)*dt; 
     X2 = x2 + r*w*sin(theta)*dt;
+    
 %     X1 = x1 + v_x*dt; 
 %     X2 = x2 + v_y*dt;
 %     X3 = x3 + w*dt;
     
-    g = [X1;X2];
-    Gt=jacobian(g,[x1;x2]);
+    g = [X1;X2;X3];
+    Gt=jacobian(g,[x1;x2;x3]);
     disp(Gt);
 
     %% Linearize Measurement Model
@@ -36,8 +37,7 @@ syms x1 x2 x3
     Y2 = 8.4711*x2^-0.0472;
     
     h = [Y1;Y2];                
-    Ht=jacobian(h,[x1,x2]);
-%     Ht=jacobian(h,[x1,x2, x3]);
+    Ht=jacobian(h,[x1,x2,x3]);
     disp(Ht);
     
     
