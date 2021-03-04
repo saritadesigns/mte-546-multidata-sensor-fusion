@@ -40,21 +40,9 @@ mu_S = zeros(n,length(T));
 %% Simulation
 for t=2:length(T)
     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
+    x(:,t) = x(:,t-1) + mvnrnd(zeros(1,n),R,1)';
     
-    %METHOD1:multiply diag. elements of R,Q matrices by a number from a normal distribution
-%     Rr = [R(1,1)*randn(1);R(2,2)*randn(1);R(3,3)*randn(1)];%testing
-%     x(:,t) = x(:,t-1) + Rr;
-    %METHOD2: generate a multvariate matrix using R,Q as sigma values
-    x(:,t) = x(:,t-1) + v(:)*dt + mvnrnd(zeros(n,1),R,1)'; % Ali:changed to update entire matrix at once
-    
-
-    y(:,t) = sensor_model(x_ideal(:,t));
-    %METHOD1:multiply diag. elements of R,Q matrices by a number from a normal distribution
-%     Qr = [Q(1,1)*randn(1);Q(2,2)*randn(1)];
-%     y(:,t) = y(:,t) + Qr;
-    %METHOD2: generate a multvariate matrix using R,Q as sigma values
-    y(:,t) = y(:,t) + mvnrnd(zeros(m,1),Q,1)';
-
+    y(:,t) = sensor_model(x_ideal(:,t)) + mvnrnd(zeros(1,m),Q,1)';
 
     v(1) = r*w*cos(x_ideal(3,t));
     v(2) = r*w*sin(x_ideal(3,t));
