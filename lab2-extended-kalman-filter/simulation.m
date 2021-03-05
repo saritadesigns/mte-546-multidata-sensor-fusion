@@ -10,7 +10,7 @@ w = 5; %angular velocity
 
 %Errors
 omega_std = 0.1 * pi / 180;
-R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) 
+R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
 % R = diag([0.5,0.5,omega_std]).^2; %System noise (squared) 
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
 % Q = diag([0.335, 0.437]); %Measurement noise (squared)
@@ -19,7 +19,7 @@ Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
 
 % EKF Initialization
 x0 = [0 0 0]'; %initial state [x,y,theta]
-mu = [100 -100 10]'; % mean (mu)
+mu = [0 0 0]'; % mean (mu)
 S = 1*eye(3);% covariance (Sigma)
 
 % Motion and sensor init
@@ -85,10 +85,11 @@ end
 
 %% Plot 
 figure(1)
+axis equal
 hold on
 % plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
 plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
-% plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
+% plot(y(1,1:t), y(2,1:t), 'x--', 'Color', '#329E2B')
 plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
 hold off
 % figure(2)
