@@ -9,8 +9,8 @@ T = 0:dt:Tf;
 %% Motion: STATIONARY
 % %Errors
 % omega_std = 0.1 * pi / 180;
-% R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 % 
 % % EKF Initialization
 % x0 = [0 0 0]'; %initial state [x,y,theta]
@@ -21,8 +21,8 @@ T = 0:dt:Tf;
 %% Motion: LINE
 
 % %Errors
-% R = diag([0.1,0.1,0.1,0.1]).^2; %System noise (squared) 
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 % 
 % % EKF Initialization
 % x0 = [0 0 1 1]'; %initial state [x,y,theta]
@@ -37,8 +37,11 @@ w = 1; %angular velocity
 
 %Errors
 omega_std = 0.1 * pi / 180;
-R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
-Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
+
+% R = diag([0.5,0.5,omega_std]).^2; %System noise (squared) %Change
+% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %Change
 
 % EKF Initialization
 x0 = [0 0 0]'; %initial state [x,y,theta]
