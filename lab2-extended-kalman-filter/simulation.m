@@ -21,7 +21,7 @@ T = 0:dt:Tf;
 %% Motion: LINE
 
 % %Errors
-% R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+% R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
 % Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 % 
 % % EKF Initialization
