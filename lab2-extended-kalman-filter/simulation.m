@@ -125,6 +125,8 @@ axis equal
 hold on
 plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
 plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
-% plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
 plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
 hold off
+
+figure(2)
+plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
