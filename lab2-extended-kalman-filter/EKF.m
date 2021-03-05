@@ -6,9 +6,6 @@ function [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,sensor_model,R,Q)
     Sp = Gt*S*Gt' + R;
     
     % update
-    disp(Sp);
-    disp(Ht);
-    disp(Q);
     K = Sp*Ht'*inv(Ht*Sp*Ht'+Q);
     mu = mup+ K*(Y-sensor_model(mup));
     S = (eye(n)-K*Ht)*Sp;
