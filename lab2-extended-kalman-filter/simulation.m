@@ -7,19 +7,28 @@ Tf = 10;
 T = 0:dt:Tf; 
 
 %% Motion: STATIONARY
+%Errors
+omega_std = 0.1 * pi / 180;
+R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
+Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+
+% EKF Initialization
+x0 = [0 0 0]'; %initial state [x,y,theta]
+mu = [0 0 0]'; % mean (mu)
+S = 1*eye(3);% covariance (Sigma)
 
 
 %% Motion: LINE
 
-%Errors
-R = diag([0.1,0.1,0.1,0.1]).^2; %System noise (squared) 
-Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
-
-% EKF Initialization
-x0 = [0 0 1 1]'; %initial state [x,y,theta]
-mu = [0 0 1 1]'; % mean (mu)
-S = 1*eye(4);% covariance (Sigma)
-A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
+% %Errors
+% R = diag([0.1,0.1,0.1,0.1]).^2; %System noise (squared) 
+% Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% 
+% % EKF Initialization
+% x0 = [0 0 1 1]'; %initial state [x,y,theta]
+% mu = [0 0 1 1]'; % mean (mu)
+% S = 1*eye(4);% covariance (Sigma)
+% A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
 
 %% Motion: CIRCLE
 % 
@@ -64,21 +73,21 @@ for t=2:length(T)
     d = sqrt(Q)*randn(m,1);
     
     %% Motion: STATIONARY
-%     x_ideal(:,t) = 0;
-%     x(:,t) = 0;
+    x_ideal(:,t) = 0;
+    x(:,t) = 0 + e;
+    Gt = eye(3);
+    Ht = zeros(2,3);
     
     %% Motion: LINE
-    x_ideal(:,t) = A*x_ideal(:,t-1);
-    x(:,t) = A*x(:,t-1) + e;
-    y(:,t) = sensor_model(x_ideal(:,t)) + d;
-    Gt = eye(4);
-    Ht = eye(4);
+%     x_ideal(:,t) = A*x_ideal(:,t-1);
+%     x(:,t) = A*x(:,t-1) + e;
+%     Gt = eye(4);
+%     Ht = zeros(2,3);
 
     
     %% Motion: CIRLCE 
 %     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
 %     x(:,t) = x(:,t-1) + v(:)*dt + e;    
-%     y(:,t) = sensor_model(x_ideal(:,t)) + d;
 % 
 %     v(1) = r*w*cos(x_ideal(3,t));
 %     v(2) = r*w*sin(x_ideal(3,t));
@@ -100,6 +109,7 @@ for t=2:length(T)
 % %             0, -4997949/(12500000*x_ideal(2,t-1)^(1309/1250)), 0];
 
 %% EKF
+    y(:,t) = sensor_model(x_ideal(:,t)) + d;
     g = x_ideal(:,t); 
     Y = y(:,t);
     [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,@sensor_model,R,Q);
