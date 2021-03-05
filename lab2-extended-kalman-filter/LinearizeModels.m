@@ -19,7 +19,7 @@ syms x1 x2 x3
     
     g = [X1;X2];
     Gt=jacobian(g,[x1;x2]);
-    disp(Gt);
+%     disp(Gt);
 
     %% Linearize Measurement Model
     syms x1 x2 x3
@@ -38,9 +38,18 @@ syms x1 x2 x3
     h = [Y1;Y2];                
     Ht=jacobian(h,[x1,x2]);
 %     Ht=jacobian(h,[x1,x2, x3]);
-    disp(Ht);
+%     disp(Ht);
     
+    %% Linearize Motion Model: Line
+    syms x y dx dy dt
+    X1 = x +dx*dt;
+    X2 = y +dy*dt;
+    X3 = dx;
+    X4 = dy;
     
+    g = [X1;X2;X3;X4];
+    Gt = jacobian(g,[x;y;dx;dy]);
+    disp(Gt);
     
     
     
