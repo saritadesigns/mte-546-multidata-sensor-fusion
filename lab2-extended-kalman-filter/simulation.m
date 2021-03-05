@@ -7,28 +7,28 @@ Tf = 10;
 T = 0:dt:Tf; 
 
 %% Motion: STATIONARY
-%Errors
-omega_std = 0.1 * pi / 180;
-R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
-Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
-
-% EKF Initialization
-x0 = [0 0 0]'; %initial state [x,y,theta]
-mu = [0 0 0]'; % mean (mu)
-S = 1*eye(3);% covariance (Sigma)
+% %Errors
+% omega_std = 0.1 * pi / 180;
+% R = diag([0.1,0.1,omega_std]).^2; %System noise (squared) 
+% Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% 
+% % EKF Initialization
+% x0 = [0 0 0]'; %initial state [x,y,theta]
+% mu = [0 0 0]'; % mean (mu)
+% S = 1*eye(3);% covariance (Sigma)
 
 
 %% Motion: LINE
 
-% %Errors
-% R = diag([0.1,0.1,0.1,0.1]).^2; %System noise (squared) 
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
-% 
-% % EKF Initialization
-% x0 = [0 0 1 1]'; %initial state [x,y,theta]
-% mu = [0 0 1 1]'; % mean (mu)
-% S = 1*eye(4);% covariance (Sigma)
-% A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
+%Errors
+R = diag([0.1,0.1,0.1,0.1]).^2; %System noise (squared) 
+Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+
+% EKF Initialization
+x0 = [0 0 1 1]'; %initial state [x,y,theta]
+mu = [0 0 1 1]'; % mean (mu)
+S = 1*eye(4);% covariance (Sigma)
+A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
 
 %% Motion: CIRCLE
 % 
@@ -73,17 +73,16 @@ for t=2:length(T)
     d = sqrt(Q)*randn(m,1);
     
     %% Motion: STATIONARY
-    x_ideal(:,t) = 0;
-    x(:,t) = 0 + e;
-    Gt = eye(3);
-    Ht = zeros(2,3);
+%     x_ideal(:,t) = 0;
+%     x(:,t) = 0 + e;
+%     Gt = eye(3);
+%     Ht = zeros(2,3);
     
     %% Motion: LINE
-%     x_ideal(:,t) = A*x_ideal(:,t-1);
-%     x(:,t) = A*x(:,t-1) + e;
-%     Gt = eye(4);
-%     Ht = zeros(2,3);
-
+    x_ideal(:,t) = A*x_ideal(:,t-1);
+    x(:,t) = A*x(:,t-1) + e;
+    Gt = eye(4);
+    Ht = zeros(2,4);
     
     %% Motion: CIRLCE 
 %     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
@@ -126,6 +125,6 @@ axis equal
 hold on
 % plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
 plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
-% plot(y(1,1:t), y(2,1:t), 'x--', 'Color', '#329E2B')
+plot(y(1,1:t), y(2,1:t), 'x--', 'Color', '#329E2B')
 plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
 hold off
