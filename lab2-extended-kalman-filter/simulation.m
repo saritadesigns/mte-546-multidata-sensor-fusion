@@ -3,15 +3,18 @@ clear all;
 close all;
 %% Initialization
 dt = 0.1; %timestep
-Tf = 15; %15 seconds
+Tf = 10; %15 seconds
 T = 0:dt:Tf; %gives 150 points
-r = 0.4; %radius
+r = 10; %radius
 w = 5; %angular velocity
 
 %Errors
 omega_std = 0.1 * pi / 180;
 R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) 
+% R = diag([0.5,0.5,omega_std]).^2; %System noise (squared) 
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% Q = diag([0.335, 0.437]); %Measurement noise (squared)
+
 [RE, Re] = eig (R);
 
 % EKF Initialization
@@ -41,7 +44,7 @@ mu_S = zeros(n,length(T));
 for t=2:length(T)
     e = RE*sqrt(Re)*randn(n,1);
     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
-    x(:,t) = x(:,t-1) + e;
+    x(:,t) = x(:,t-1) + v(:)*dt + e;
 %     x(:,t) = x(:,t-1) + mvnrnd(zeros(1,n),R,1)';
     
     d = sqrt(Q)*randn(m,1);
@@ -82,8 +85,9 @@ end
 %% Plot 
 figure(1)
 hold on
-plot(x(1,2:t),x(2,2:t), 'ro--') %state x and y (directions) for timesteps
-plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
+% plot(x_ideal(1,2:t),x_ideal(2,2:t), 'ro--') %state x and y (directions) for timesteps
+plot(x(1,2:t),x(2,2:t), 'rx--') %state x and y (directions) for timesteps
+% plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
 plot(mu_S(1,2:t),mu_S(2,2:t), 'bx--')
 hold off
 % figure(2)

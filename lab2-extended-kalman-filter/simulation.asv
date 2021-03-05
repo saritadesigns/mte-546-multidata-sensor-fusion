@@ -3,7 +3,7 @@ clear all;
 close all;
 %% Initialization
 dt = 0.1; %timestep
-Tf = 15; %15 seconds
+Tf = 10; %15 seconds
 T = 0:dt:Tf; %gives 150 points
 r = 0.4; %radius
 w = 5; %angular velocity
@@ -11,7 +11,10 @@ w = 5; %angular velocity
 %Errors
 omega_std = 0.1 * pi / 180;
 R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) 
+% R = diag([0.5,0.5,omega_std]).^2; %System noise (squared) 
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
+% Q = diag([0.335, 0.437]); %Measurement noise (squared)
+
 [RE, Re] = eig (R);
 
 % EKF Initialization
@@ -51,28 +54,13 @@ for t=2:length(T)
     v(1) = r*w*cos(x_ideal(3,t));
     v(2) = r*w*sin(x_ideal(3,t));
     
-    Gt11 = x_ideal(2,t)^2/(5*x_ideal(1,t)^3*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(3/2)) + 1;
-    Gt12 = -x_ideal(2,t)/(5*x_ideal(1,t)^2*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(3/2));
-    Gt21 = x_ideal(2,t)^3/(5*x_ideal(1,t)^4*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(3/2)) - x_ideal(2,t)/(5*x_ideal(1,t)^2*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(1/2));
-    Gt22 = 1/(5*x_ideal(1,t)*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(1/2)) - x_ideal(2,t)^2/(5*x_ideal(1,t)^3*(x_ideal(2,t)^2/x_ideal(1,t)^2 + 1)^(3/2)) + 1;
-    
-    Gt = [Gt11 Gt12; Gt21 Gt22];
-    
-    Ht = [-25529417/(50000000*x_ideal(1,t)^(10619/10000)),0;
-        0,-4997949/(12500000*x_ideal(2,t)^(1309/1250))];
-
-%% OLD CODE: USING THIRD STATE FOR THETA 
-
-%     v(1) = r*w*cos(x_ideal(3,t));
-%     v(2) = r*w*sin(x_ideal(3,t));
-    
-%     Gt = [1, 0, -sin(x_ideal(3,t-1))/5; 
-%           0, 1,  cos(x_ideal(3,t-1))/5;
-%           0, 0,1];
+    Gt = [1, 0, -sin(x_ideal(3,t-1))/5; 
+          0, 1,  cos(x_ideal(3,t-1))/5;
+          0, 0,1];
     
     %Ht (poly fit)
-%     Ht = [(5142*x_ideal(1,t-1))/625 - 47153/10000,0,0;
-%         0,(23153*x_ideal(2,t-1))/5000 - 30747/10000,0];
+    Ht = [(5142*x_ideal(1,t-1))/625 - 47153/10000,0,0;
+        0,(23153*x_ideal(2,t-1))/5000 - 30747/10000,0];
     
     %Ht (inverse fit)
 %     Ht = [83741/(10000*(x_ideal(1,t-1) + 123/10000)) - ((83741*x_ideal(1,t-1))/10000 + 479/2000)/(x_ideal(1,t-1) + 123/10000)^2, 0, 0;
@@ -97,8 +85,9 @@ end
 %% Plot 
 figure(1)
 hold on
-plot(x(1,2:t),x(2,2:t), 'ro--') %state x and y (directions) for timesteps
-plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
+plot(x_ideal(1,2:t),x_ideal(2,2:t), 'ro--') %state x and y (directions) for timesteps
+plot(x(1,2:t),x(2,2:t), 'rx--') %state x and y (directions) for timesteps
+% plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
 plot(mu_S(1,2:t),mu_S(2,2:t), 'bx--')
 hold off
 % figure(2)
