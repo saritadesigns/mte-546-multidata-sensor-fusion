@@ -19,14 +19,14 @@ Q = diag([0.00335, 0.00437]); %Measurement noise (squared)
 
 % EKF Initialization
 x0 = [0 0 0]'; %initial state [x,y,theta]
-mu = [0 0 0]'; % mean (mu)
+mu = [100 -100 10]'; % mean (mu)
 S = 1*eye(3);% covariance (Sigma)
 
 % Motion and sensor init
 n = length(mu);
 m = 2; %values for sensor output (2 --> x,y accelerations)
 x = zeros(n,length(T));
-x_ideal = zeros (n, length(T));
+x_ideal = zeros(n, length(T));
 y = zeros(m, length(T));
 x(:,1) = x0;
 x_ideal(:,1)= x0;
@@ -39,6 +39,7 @@ v = [v_x v_y w]';
 %Storage for EKF
 mup_S = zeros(n,length(T));
 mu_S = zeros(n,length(T));
+mu_S(:,1) = mu;
 
 %% Simulation
 for t=2:length(T)
@@ -85,10 +86,10 @@ end
 %% Plot 
 figure(1)
 hold on
-% plot(x_ideal(1,2:t),x_ideal(2,2:t), 'ro--') %state x and y (directions) for timesteps
-plot(x(1,2:t),x(2,2:t), 'rx--') %state x and y (directions) for timesteps
+% plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
+plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
 % plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
-plot(mu_S(1,2:t),mu_S(2,2:t), 'bx--')
+plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
 hold off
 % figure(2)
 % plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B') %measurement
