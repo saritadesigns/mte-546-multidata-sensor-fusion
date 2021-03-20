@@ -127,8 +127,11 @@ for t=2:length(T)
     x_ideal(:,t) = A*x_ideal(:,t-1);
     x(:,t) = A*x(:,t-1) + e;
     Gt = eye(n);
-    Ht = eye(m,n);
+%     Ht = eye(m,n);
     
+    %if rotating, use gyroscope jacobian, if not rotating, use
+    %accelerometers' jacobian
+    Ht=findJacobian(x_ideal(:,t-1),isRotating);
     %% Motion: CIRLCE 
 %     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
 %     x(:,t) = x(:,t-1) + v(:)*dt + e;    
