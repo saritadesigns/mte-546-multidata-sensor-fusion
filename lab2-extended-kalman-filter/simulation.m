@@ -37,21 +37,21 @@ R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 
 % EKF Initialization
-x0 = [0 0 1 1]'; %initial state [x,y,dx,dy]
-mu = [0 0 1 1]'; % mean (mu)
+x0 = [0 0 1 0]'; %initial state [x,y,dx,dy]
+mu = [0 0 1 0]'; % mean (mu)
 S = 1*eye(4);% covariance (Sigma)
-A = [1 0 dt 0;0 1 0 0;0 0 1 0;0 0 0 0];
+A = [1 0 dt 0;0 1 0 0;0 0 1 0;0 0 0 1];
 
 %% Motion: VERTICAL LINE
-% Errors
+% % Errors
 % R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
 % Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 % 
-% EKF Initialization
-% x0 = [0 0 1 1]'; %initial state [x,y,dx,dy]
-% mu = [0 0 1 1]'; % mean (mu)
+% % EKF Initialization
+% x0 = [0 0 0 1]'; %initial state [x,y,dx,dy]
+% mu = [0 0 0 1]'; % mean (mu)
 % S = 1*eye(4);% covariance (Sigma)
-% A = [1 0 0 0;0 1 0 dt;0 0 0 0;0 0 0 1];
+% A = [1 0 0 0;0 1 0 dt;0 0 1 0;0 0 0 1];
 
 %% Motion: CIRCLE
 
