@@ -22,7 +22,7 @@ T = 0:dt:Tf;
 
 % Errors
 omega_std = 1 * pi / 180;
-R = diag([0.0005,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+R = diag([0.05,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 
 % EKF Initialization with Changing Orientation
@@ -182,7 +182,7 @@ figure(3)
 hold on
 plot(T(1:t),y(1,1:t), 'rx--');
 plot(T(1:t),y(2,1:t), 'bx--');
-legend({'y-accelerometer','x-accelerometer'})
+legend({'x-accelerometer','y-accelerometer'})
 xlabel('acceleration')
 ylabel('time')
 title('Sensor Model Output')
