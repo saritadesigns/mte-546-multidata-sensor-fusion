@@ -18,40 +18,28 @@ T = 0:dt:Tf;
 % S = 1*eye(3);% covariance (Sigma)
 
 
-%% Motion: ANGLED LINE
+%% Motion: LINE
 
-% % Errors
-% R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
-% 
-% % EKF Initialization
-% x0 = [0 0 1 1]'; %initial state [x,y,dx,dy]
-% mu = [0 0 1 1]'; % mean (mu)
-% S = 1*eye(4);% covariance (Sigma)
-% A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
-
-
-%% Motion: HORIZONTAL LINE
 % Errors
-R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
+omega_std = 0.1 * pi / 180;
+R = diag([0.05,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 
 % EKF Initialization
-x0 = [0 0 1 0]'; %initial state [x,y,dx,dy]
-mu = [0 0 1 0]'; % mean (mu)
-S = 1*eye(4);% covariance (Sigma)
-A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
+S = 1*eye(6);% covariance (Sigma)
+A = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1];
 
-%% Motion: VERTICAL LINE
-% % Errors
-% R = diag([0.05,0.05,0.05,0.05]).^2; %System noise (squared) %OG
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
-% 
-% % EKF Initialization
-% x0 = [0 0 0 1]'; %initial state [x,y,dx,dy]
-% mu = [0 0 0 1]'; % mean (mu)
-% S = 1*eye(4);% covariance (Sigma)
-% A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
+% % Horizontal Line
+% x0 = [0 0 0 1 0 1]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 1 0 1]'; % mean (mu)
+
+% % Vertical Line
+% x0 = [0 0 0 0 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 0 1 1]'; % mean (mu)
+
+% Angled Line
+x0 = [0 0 0 1 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
+mu = [0 0 0 1 1 1]'; % mean (mu)
 
 %% Motion: CIRCLE
 
@@ -101,14 +89,14 @@ for t=2:length(T)
     %% Motion: STATIONARY
 %     x_ideal(:,t) = 0;
 %     x(:,t) = 0 + e;
-%     Gt = eye(3);
-%     Ht = eye(2,3);
+%     Gt = eye(n);
+%     Ht = eye(m,n);
     
     %% Motion: LINE (ANY)
     x_ideal(:,t) = A*x_ideal(:,t-1);
     x(:,t) = A*x(:,t-1) + e;
-    Gt = eye(4);
-    Ht = eye(2,4);
+    Gt = eye(n);
+    Ht = eye(m,n);
     
     %% Motion: CIRLCE 
 %     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
@@ -152,11 +140,6 @@ hold on
 plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
 plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
 plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
-
-% Error covariance
-% S_pos = [S(1,1) S(1,2); S(2,1) S(2,2)];
-% error_ellipse(S_pos,mu_S,0.75);
-% error_ellipse(S_pos,mu_S,0.95);
 
 legend({'actual position','noisy position','estimated position (EKF)'})
 xlabel('x position')
