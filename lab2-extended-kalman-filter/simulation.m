@@ -103,13 +103,13 @@ for t=2:length(T)
     if t>tstart1 && t<tend1
         A = Arotating;
     end
-    if t==tend1
+    if t>=tend1 && t<tstart2
         A = Aconstant;
     end
-    if t>tstart2 && t<tend2
+    if t>=tstart2 && t<tend2
         A = Arotatingback;
     end
-    if t==tend2
+    if t>=tend2
         A = Aconstant;
     end
     
@@ -142,7 +142,13 @@ for t=2:length(T)
 % %             0, -4997949/(12500000*x_ideal(2,t-1)^(1309/1250)), 0];
 
 %% EKF
-    y(:,t) = sensor_model(x_ideal(:,t)) + d;
+    if t>=tend1 && t<tstart2
+        switched = [x_ideal(2,t);x_ideal(1,t)];
+        y(:,t) = sensor_model(switched) + d;
+    else
+        y(:,t) = sensor_model(x_ideal(:,t)) + d;
+    end
+    
     g = x(:,t); 
     Y = y(:,t);
     [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,@sensor_model,R,Q);
