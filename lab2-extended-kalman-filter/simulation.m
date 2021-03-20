@@ -17,7 +17,6 @@ T = 0:dt:Tf;
 % mu = [0 0 0]'; % mean (mu)
 % S = 1*eye(3);% covariance (Sigma)
 
-
 %% Motion: LINE
 
 % Errors
@@ -79,7 +78,7 @@ mu = [0 0 0 0 1 dtheta]'; % mean (mu)
 
 % Motion and sensor init
 n = length(mu);
-m = 3; %INCLUDED GYRO, values for sensor output (3 --> x,y accelerations,gyro)
+m = 3; %values for sensor output (3 --> x,y accelerations,gyro)
 x = zeros(n,length(T));
 x_ideal = zeros(n, length(T));
 y = zeros(m, length(T));
@@ -202,13 +201,12 @@ hold off
 
 figure(3)
 hold on
-plot(T(1:t),y(1,1:t), 'rx--');
-plot(T(1:t),y(2,1:t), 'bx--');
+plot(T(1:t),y(1,1:t), 'g+:');
+plot(T(1:t),y(2,1:t), 'm+:');
 legend({'x-accelerometer','y-accelerometer'})
 xlabel('time (sec)')
 ylabel('acceleration (m/s^2)')
 title('Sensor Model Output')
-
 
 % figure(4)
 % hold on
@@ -218,9 +216,8 @@ title('Sensor Model Output')
 % ylabel('Kalman Gain')
 % title('Kalman Gain')
 
-
 figure(5)
-plot(T(1:t),y(3,1:t), 'bo--');
+plot(T(1:t),y(3,1:t), 'm+:');
 legend({'z-gyroscope'})
 xlabel('time')
 ylabel('angular velocity (rad/sec)')
