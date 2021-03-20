@@ -7,15 +7,12 @@ w = 5; %angular velocity
 
 syms x1 x2 x3
 
-    theta = atan(x2/x1);
-%     v_x = r*w*cos(x3);
-%     v_y = r*w*sin(x3);
-    
-    X1 = x1 + r*w*cos(theta)*dt; 
-    X2 = x2 + r*w*sin(theta)*dt;
-%     X1 = x1 + v_x*dt; 
-%     X2 = x2 + v_y*dt;
-%     X3 = x3 + w*dt;
+    v_x = r*w*cos(x3);
+    v_y = r*w*sin(x3);
+
+    X1 = x1 + v_x*dt; 
+    X2 = x2 + v_y*dt;
+    X3 = x3 + w*dt;
     
     g = [X1;X2];
     Gt=jacobian(g,[x1;x2]);
@@ -28,28 +25,27 @@ syms x1 x2 x3
 %     Y2 = 2.3153*x2^2 -3.0747*x2 + 9.6963;
 
     %Inverse fit
-%     Y1 = (8.3741*x1+0.2395)/(x1+0.0123);
-%     Y2 = (8.3558*x2+1.3344)/(x2+0.1294);
+    Y1 = (8.3741*x1+0.2395)/(x1+0.0123);
+    Y2 = (8.3558*x2+1.3344)/(x2+0.1294);
     
     %Power fit
-    Y1 = 8.2486*x1^-0.0619;
-    Y2 = 8.4711*x2^-0.0472;
+%     Y1 = 8.2486*x1^-0.0619;
+%     Y2 = 8.4711*x2^-0.0472;
     
     h = [Y1;Y2];                
-    Ht=jacobian(h,[x1,x2]);
-%     Ht=jacobian(h,[x1,x2, x3]);
-%     disp(Ht);
+    Ht=jacobian(h,[x1,x2, x3]);
+    disp(Ht);
     
     %% Linearize Motion Model: Line
-    syms x y dx dy dt
-    X1 = x +dx*dt;
-    X2 = y +dy*dt;
-    X3 = dx;
-    X4 = dy;
-    
-    g = [X1;X2;X3;X4];
-    Gt = jacobian(g,[x;y;dx;dy]);
-    disp(Gt);
-    
+%     syms x y dx dy dt
+%     X1 = x +dx*dt;
+%     X2 = y +dy*dt;
+%     X3 = dx;
+%     X4 = dy;
+%     
+%     g = [X1;X2;X3;X4];
+%     Gt = jacobian(g,[x;y;dx;dy]);
+%     disp(Gt);
+%     
     
     

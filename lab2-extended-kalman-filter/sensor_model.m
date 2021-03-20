@@ -10,6 +10,6 @@ function y = sensor_model(mu)
     %Power fit
 %     y1 = 8.2486*mu(1)^-0.0619;
 %     y2 = 8.4711*mu(2)^-0.0472;
-    
+%     
     y = [y1;y2];
 end
