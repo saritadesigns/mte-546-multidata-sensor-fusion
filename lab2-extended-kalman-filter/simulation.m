@@ -21,25 +21,32 @@ T = 0:dt:Tf;
 %% Motion: LINE
 
 % Errors
-omega_std = 0.1 * pi / 180;
-R = diag([0.05,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
+omega_std = 1 * pi / 180;
+R = diag([0.0005,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
 Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 
-% EKF Initialization
+% EKF Initialization with Changing Orientation
 S = 1*eye(6);% covariance (Sigma)
-A = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1];
+Aconstant = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 0;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1]; %constant orientation
+Arotating = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1]; %variable orientation
+Arotatingback = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 -dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1]; %variable orientation
+A = Aconstant;
+tstart1 = 5;
+tend1 = 25;
+tstart2 = 70;
+tend2 = 90;
 
 % % Horizontal Line
 % x0 = [0 0 0 1 0 1]'; %initial state [x,y,theta,dx,dy,dtheta]
 % mu = [0 0 0 1 0 1]'; % mean (mu)
 
-% % Vertical Line
-% x0 = [0 0 0 0 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 0 1 1]'; % mean (mu)
+% Vertical Line
+x0 = [0 0 0 0 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
+mu = [0 0 0 0 1 1]'; % mean (mu)
 
 % Angled Line
-x0 = [0 0 0 1 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
-mu = [0 0 0 1 1 1]'; % mean (mu)
+% x0 = [0 0 0 1 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 1 1 1]'; % mean (mu)
 
 %% Motion: CIRCLE
 
@@ -93,6 +100,19 @@ for t=2:length(T)
 %     Ht = eye(m,n);
     
     %% Motion: LINE (ANY)
+    if t>tstart1 && t<tend1
+        A = Arotating;
+    end
+    if t==tend1
+        A = Aconstant;
+    end
+    if t>tstart2 && t<tend2
+        A = Arotatingback;
+    end
+    if t==tend2
+        A = Aconstant;
+    end
+    
     x_ideal(:,t) = A*x_ideal(:,t-1);
     x(:,t) = A*x(:,t-1) + e;
     Gt = eye(n);
@@ -109,15 +129,15 @@ for t=2:length(T)
 %           0, 1,  cos(x_ideal(3,t-1))/5;
 %           0, 0,1];
 %     
-% %     Ht (poly fit)
+%     %Ht (poly fit)
 % %     Ht = [(5142*x_ideal(1,t-1))/625 - 47153/10000,0,0;
 % %         0,(23153*x_ideal(2,t-1))/5000 - 30747/10000,0];
 %     
-% % %     Ht (inverse fit)
+%     %Ht (inverse fit)
 %     Ht = [83741/(10000*(x_ideal(1,t-1) + 123/10000)) - ((83741*x_ideal(1,t-1))/10000 + 479/2000)/(x_ideal(1,t-1) + 123/10000)^2, 0, 0;
 %             0, 41779/(5000*(x_ideal(2,t-1) + 647/5000)) - ((41779*x_ideal(2,t-1))/5000 + 834/625)/(x_ideal(2,t-1) + 647/5000)^2, 0];
 %     
-% % %     Ht (power fit)
+%     %Ht (power fit)
 % % 	Ht = [-25529417/(50000000*x_ideal(1,t-1)^(10619/10000)),0 , 0;
 % %             0, -4997949/(12500000*x_ideal(2,t-1)^(1309/1250)), 0];
 
@@ -147,10 +167,23 @@ ylabel('y position')
 title('X and Y Positions (Motion)')
 hold off
 
-% figure(2)
-% plot(y(1,2:t), y(2,2:t), 'x--', 'Color', '#329E2B')
-% legend({'sensor output'})
-% xlabel('x acceleration')
-% ylabel('y acceleration')
-% title('Sensor Model Output')
+figure(2)
+hold on
+plot(T(1:t),x_ideal(3,1:t), 'ro--');
+plot(T(1:t),x(3,1:t), 'rx--');
+plot(T(1:t),mu_S(3,1:t), 'bx--');
+legend({'actual orientation','noisy orientation','estimated orientation (EKF)'})
+xlabel('time (sec)')
+ylabel('orientation (rad)')
+title('Orientation over time')
+hold off
+
+figure(3)
+hold on
+plot(T(1:t),y(1,1:t), 'rx--');
+plot(T(1:t),y(2,1:t), 'bx--');
+legend({'y-accelerometer','x-accelerometer'})
+xlabel('acceleration')
+ylabel('time')
+title('Sensor Model Output')
 
