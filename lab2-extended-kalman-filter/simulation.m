@@ -10,7 +10,7 @@ T = 0:dt:Tf;
 % %Errors
 % omega_std = 0.1 * pi / 180;
 % R = diag([0.05,0.05,omega_std]).^2; %System noise (squared) %OG
-% Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
+% Q = diag([0.00335, 0.00437, ]); %Measurement noise (squared) %OG
 % 
 % % EKF Initialization
 % x0 = [0 0 0]'; %initial state [x,y,theta]
@@ -23,7 +23,7 @@ T = 0:dt:Tf;
 % Errors
 omega_std = 1 * pi / 180;
 R = diag([0.05,0.05,omega_std,0.05,0.05,omega_std]).^2; %System noise (squared) %OG
-Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
+Q = diag([0.00335, 0.00437, 0.000437]); %Measurement noise (squared) % TODO change gyro-z noise to lab values 
 
 % EKF Initialization with Changing Orientation
 S = 1*eye(6);% covariance (Sigma)
@@ -31,22 +31,25 @@ Aconstant = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 0;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0
 Arotating = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1]; %variable orientation
 Arotatingback = [1 0 0 dt 0 0;0 1 0 0 dt 0;0 0 1 0 0 -dt;0 0 0 1 0 0;0 0 0 0 1 0;0 0 0 0 0 1]; %variable orientation
 A = Aconstant;
+
+range = 15;
 tstart1 = 5;
-tend1 = 25;
+tend1 = tstart1+range;
 tstart2 = 70;
-tend2 = 90;
+tend2 = tstart2+range;
 
-% % Horizontal Line
-% x0 = [0 0 0 1 0 1]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 1 0 1]'; % mean (mu)
+dtheta = pi/6;
+% Horizontal Line
+% x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 1 0 dtheta]'; % mean (mu)
 
-% Vertical Line
-x0 = [0 0 0 0 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
-mu = [0 0 0 0 1 1]'; % mean (mu)
+% % Vertical Line
+x0 = [0 0 0 0 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+mu = [0 0 0 0 1 dtheta]'; % mean (mu)
 
 % Angled Line
-% x0 = [0 0 0 1 1 1]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 1 1 1]'; % mean (mu)
+% x0 = [0 0 0 1 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 1 1 dtheta]'; % mean (mu)
 
 %% Motion: CIRCLE
 
@@ -76,7 +79,7 @@ mu = [0 0 0 0 1 1]'; % mean (mu)
 
 % Motion and sensor init
 n = length(mu);
-m = 2; %values for sensor output (2 --> x,y accelerations)
+m = 3; %INCLUDED GYRO, values for sensor output (2 --> x,y accelerations,gyro)
 x = zeros(n,length(T));
 x_ideal = zeros(n, length(T));
 y = zeros(m, length(T));
@@ -142,19 +145,26 @@ for t=2:length(T)
 % %             0, -4997949/(12500000*x_ideal(2,t-1)^(1309/1250)), 0];
 
 %% EKF
-    if t>=tend1 && t<tstart2
-        switched = [x_ideal(2,t);x_ideal(1,t)];
-        f = [x(2,t);x(1,t)];
-        y(:,t) = sensor_model(switched) + d;
-        
+
+    if t<tstart1 || (t>tend1 && t<tstart2) || t>tend2    %define boolean to determine if phone is rotating or not
+       lin_bool=1; 
     else
-        y(:,t) = sensor_model(x_ideal(:,t)) + d;
-        f = [x(1,t);x(2,t)];
+        lin_bool=0;
     end
     
+    if t>=tend1 && t<tstart2
+        switched = [x_ideal(2,t);x_ideal(1,t);x_ideal(3,t)];%added theta
+        f = [x(2,t);x(1,t);x(3,t)];%added gyro
+        y(:,t) = sensor_model(switched,lin_bool,0) + d;%added 3rd input to function (noise), since noise is already added outside the function, set to 0. But when calling sensor_model in EKF.m, need to add d(3). sorry 4 long comment
+        
+    else
+        y(:,t) = sensor_model(x_ideal(:,t),lin_bool,0) + d;
+        f = [x(1,t);x(2,t);x(3,t)];
+    end
+
     g = x(:,t); 
     Y = y(:,t);
-    [mu,S,K,mup] = EKF(f,g,Gt,Ht,S,Y,@sensor_model,R,Q);
+    [mu,S,K,mup] = EKF(lin_bool,d(3),f,g,Gt,Ht,S,Y,@sensor_model,R,Q);
     
     % Store results
     mup_S(:,t) = mup;
@@ -196,3 +206,9 @@ xlabel('time')
 ylabel('acceleration (m/s^2)')
 title('Sensor Model Output')
 
+figure(4)
+plot(T(1:t),y(3,1:t), 'bo--');
+legend({'z-gyroscope'})
+xlabel('time')
+ylabel('angular velocity (rad/sec)')
+title('Gyroscope Sensor Model Output')
