@@ -79,7 +79,7 @@ mu = [0 0 0 0 1 dtheta]'; % mean (mu)
 
 % Motion and sensor init
 n = length(mu);
-m = 3; %INCLUDED GYRO, values for sensor output (2 --> x,y accelerations,gyro)
+m = 3; %INCLUDED GYRO, values for sensor output (3 --> x,y accelerations,gyro)
 x = zeros(n,length(T));
 x_ideal = zeros(n, length(T));
 y = zeros(m, length(T));
