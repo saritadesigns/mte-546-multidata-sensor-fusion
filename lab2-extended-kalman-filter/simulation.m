@@ -144,14 +144,17 @@ for t=2:length(T)
 %% EKF
     if t>=tend1 && t<tstart2
         switched = [x_ideal(2,t);x_ideal(1,t)];
+        f = [x(2,t);x(1,t)];
         y(:,t) = sensor_model(switched) + d;
+        
     else
         y(:,t) = sensor_model(x_ideal(:,t)) + d;
+        f = [x(1,t);x(2,t)];
     end
     
     g = x(:,t); 
     Y = y(:,t);
-    [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,@sensor_model,R,Q);
+    [mu,S,K,mup] = EKF(f,g,Gt,Ht,S,Y,@sensor_model,R,Q);
     
     % Store results
     mup_S(:,t) = mup;

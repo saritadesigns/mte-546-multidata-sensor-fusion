@@ -1,4 +1,4 @@
-function [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,sensor_model,R,Q)
+function [mu,S,K,mup] = EKF(f,g,Gt,Ht,S,Y,sensor_model,R,Q)
 %[returns vars] = fnName(input vars)
     % Prediction
     mup = g;
@@ -7,6 +7,6 @@ function [mu,S,K,mup] = EKF(g,Gt,Ht,S,Y,sensor_model,R,Q)
     
     % update
     K = Sp*Ht'*inv(Ht*Sp*Ht'+Q);
-    mu = mup+ K*(Y-sensor_model(mup));
+    mu = mup+ K*(Y-sensor_model(f));
     S = (eye(n)-K*Ht)*Sp;
 end
