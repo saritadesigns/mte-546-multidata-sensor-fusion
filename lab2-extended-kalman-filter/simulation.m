@@ -90,8 +90,10 @@ mup_S = zeros(n,length(T));
 mu_S = zeros(n,length(T));
 K_S1 = zeros(n,length(T));
 K_S2 = zeros(n,length(T));
+K_S3 = zeros(n,length(T));
 K_S1(:,1) = 0;
 K_S2(:,1) = 0;
+K_S3(:,1) = 0;
 mu_S(:,1) = mu;
 
 %% Simulation
@@ -127,11 +129,8 @@ for t=2:length(T)
     x_ideal(:,t) = A*x_ideal(:,t-1);
     x(:,t) = A*x(:,t-1) + e;
     Gt = eye(n);
-%     Ht = eye(m,n);
-    
-    %if rotating, use gyroscope jacobian, if not rotating, use
-    %accelerometers' jacobian
     Ht=findJacobian(x_ideal(:,t-1),isRotating);
+    
     %% Motion: CIRLCE 
 %     x_ideal(:,t) = x_ideal(:,t-1) + v(:)*dt;
 %     x(:,t) = x(:,t-1) + v(:)*dt + e;    
@@ -174,6 +173,7 @@ for t=2:length(T)
     mu_S(:,t) = mu;
     K_S1(:,t) = K(:,1);
     K_S2(:,t) = K(:,2);
+    K_S3(:,t) = K(:,3);
     
 end
 
@@ -211,13 +211,14 @@ xlabel('time (sec)')
 ylabel('acceleration (m/s^2)')
 title('Sensor Model Output')
 
-% figure(4)
-% hold on
-% plot(T(1:t),K_S1(:,1:t));
-% plot(T(1:t),K_S2(:,1:t));
-% xlabel('time (sec)')
-% ylabel('Kalman Gain')
-% title('Kalman Gain')
+figure(4)
+hold on
+plot(T(1:t),K_S1(:,1:t));
+plot(T(1:t),K_S2(:,1:t));
+plot(T(1:t),K_S3(:,1:t));
+xlabel('time (sec)')
+ylabel('Kalman Gain')
+title('Kalman Gain')
 
 figure(5)
 plot(T(1:t),y(3,1:t), 'm+:');
