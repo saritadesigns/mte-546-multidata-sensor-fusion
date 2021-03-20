@@ -107,17 +107,22 @@ for t=2:length(T)
 %     Ht = eye(m,n);
     
     %% Motion: LINE (ANY)
+    isRotating = 0;
     if t>tstart1 && t<tend1
         A = Arotating;
+        isRotating = 0;
     end
     if t>=tend1 && t<tstart2
         A = Aconstant;
+        isRotating = 1;
     end
     if t>=tstart2 && t<tend2
         A = Arotatingback;
+        isRotating = 1;
     end
     if t>=tend2
         A = Aconstant;
+        isRotating = 0;
     end
     
     x_ideal(:,t) = A*x_ideal(:,t-1);
@@ -149,25 +154,18 @@ for t=2:length(T)
 % %             0, -4997949/(12500000*x_ideal(2,t-1)^(1309/1250)), 0];
 
 %% EKF
-
-    if t<tstart1 || (t>tend1 && t<tstart2) || t>tend2    %define boolean to determine if phone is rotating or not
-       lin_bool=1; 
-    else
-        lin_bool=0;
-    end
-    
     if t>=tend1 && t<tstart2
-        switched = [x_ideal(2,t);x_ideal(1,t);x_ideal(3,t)];%added theta
-        y(:,t) = sensor_model(switched,lin_bool,0) + d;%added 3rd input to function (noise), since noise is already added outside the function, set to 0. But when calling sensor_model in EKF.m, need to add d(3). sorry 4 long comment
-        f = [x(2,t);x(1,t);x(3,t)];%added gyro
+        switched = [x_ideal(2,t);x_ideal(1,t);x_ideal(3,t)];
+        y(:,t) = sensor_model(switched,isRotating,0) + d;
+        sensor_model_input = [x(2,t);x(1,t);x(3,t)];
     else
-        y(:,t) = sensor_model(x_ideal(:,t),lin_bool,0) + d;
-        f = [x(1,t);x(2,t);x(3,t)];
+        y(:,t) = sensor_model(x_ideal(:,t),isRotating,0) + d;
+        sensor_model_input = [x(1,t);x(2,t);x(3,t)];
     end
-
+    gyro_noise = d(3);
     g = x(:,t); 
     Y = y(:,t);
-    [mu,S,K,mup] = EKF(lin_bool,d(3),f,g,Gt,Ht,S,Y,@sensor_model,R,Q);
+    [mu,S,K,mup] = EKF(isRotating,gyro_noise,sensor_model_input,g,Gt,Ht,S,Y,@sensor_model,R,Q);
     
     % Store results
     mup_S(:,t) = mup;
