@@ -183,7 +183,7 @@ hold on
 plot(T(1:t),y(1,1:t), 'rx--');
 plot(T(1:t),y(2,1:t), 'bx--');
 legend({'x-accelerometer','y-accelerometer'})
-xlabel('acceleration')
-ylabel('time')
+xlabel('time')
+ylabel('acceleration (m/s^2)')
 title('Sensor Model Output')
 

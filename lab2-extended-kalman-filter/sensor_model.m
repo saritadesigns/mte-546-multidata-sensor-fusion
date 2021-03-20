@@ -4,8 +4,8 @@ function y = sensor_model(mu)
 %     y2 = 2.3153*mu(2)^2 -3.0747*mu(2) + 9.6963;  
 
     %Inverse fit
-    y1 = (8.3741*mu(1)+0.2395)/(mu(1)+0.0123);
-    y2 = (8.3558*mu(2)+1.3344)/(mu(2)+0.1294);
+    y1 = (8.3741*mu(1)+0.2395)/(mu(1)+0.0123); %19 nonaccelerating
+    y2 = (8.3558*mu(2)+1.3344)/(mu(2)+0.1294); %10 nonaccelerating
     
     %Power fit
 %     y1 = 8.2486*mu(1)^-0.0619;
