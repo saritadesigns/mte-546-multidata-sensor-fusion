@@ -89,6 +89,10 @@ x_ideal(:,1)= x0;
 %Storage for EKF
 mup_S = zeros(n,length(T));
 mu_S = zeros(n,length(T));
+K_S1 = zeros(n,length(T));
+K_S2 = zeros(n,length(T));
+K_S1(:,1) = 0;
+K_S2(:,1) = 0;
 mu_S(:,1) = mu;
 
 %% Simulation
@@ -154,9 +158,8 @@ for t=2:length(T)
     
     if t>=tend1 && t<tstart2
         switched = [x_ideal(2,t);x_ideal(1,t);x_ideal(3,t)];%added theta
-        f = [x(2,t);x(1,t);x(3,t)];%added gyro
         y(:,t) = sensor_model(switched,lin_bool,0) + d;%added 3rd input to function (noise), since noise is already added outside the function, set to 0. But when calling sensor_model in EKF.m, need to add d(3). sorry 4 long comment
-        
+        f = [x(2,t);x(1,t);x(3,t)];%added gyro
     else
         y(:,t) = sensor_model(x_ideal(:,t),lin_bool,0) + d;
         f = [x(1,t);x(2,t);x(3,t)];
@@ -169,6 +172,8 @@ for t=2:length(T)
     % Store results
     mup_S(:,t) = mup;
     mu_S(:,t) = mu;
+    K_S1(:,t) = K(:,1);
+    K_S2(:,t) = K(:,2);
     
 end
 
@@ -202,11 +207,21 @@ hold on
 plot(T(1:t),y(1,1:t), 'rx--');
 plot(T(1:t),y(2,1:t), 'bx--');
 legend({'x-accelerometer','y-accelerometer'})
-xlabel('time')
+xlabel('time (sec)')
 ylabel('acceleration (m/s^2)')
 title('Sensor Model Output')
 
-figure(4)
+
+% figure(4)
+% hold on
+% plot(T(1:t),K_S1(:,1:t));
+% plot(T(1:t),K_S2(:,1:t));
+% xlabel('time (sec)')
+% ylabel('Kalman Gain')
+% title('Kalman Gain')
+
+
+figure(5)
 plot(T(1:t),y(3,1:t), 'bo--');
 legend({'z-gyroscope'})
 xlabel('time')
