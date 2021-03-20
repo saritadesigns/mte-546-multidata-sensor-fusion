@@ -40,7 +40,7 @@ Q = diag([0.00335, 0.00437]); %Measurement noise (squared) %OG
 x0 = [0 0 1 0]'; %initial state [x,y,dx,dy]
 mu = [0 0 1 0]'; % mean (mu)
 S = 1*eye(4);% covariance (Sigma)
-A = [1 0 dt 0;0 1 0 0;0 0 1 0;0 0 0 1];
+A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
 
 %% Motion: VERTICAL LINE
 % % Errors
@@ -51,7 +51,7 @@ A = [1 0 dt 0;0 1 0 0;0 0 1 0;0 0 0 1];
 % x0 = [0 0 0 1]'; %initial state [x,y,dx,dy]
 % mu = [0 0 0 1]'; % mean (mu)
 % S = 1*eye(4);% covariance (Sigma)
-% A = [1 0 0 0;0 1 0 dt;0 0 1 0;0 0 0 1];
+% A = [1 0 dt 0;0 1 0 dt;0 0 1 0;0 0 0 1];
 
 %% Motion: CIRCLE
 
