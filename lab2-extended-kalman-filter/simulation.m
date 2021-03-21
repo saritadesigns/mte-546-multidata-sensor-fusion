@@ -37,7 +37,7 @@ tend1 = tstart1+range;
 tstart2 = 70;
 tend2 = tstart2+range;
 
-dtheta = pi/6;
+dtheta = pi/3;
 % Horizontal Line
 % x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
 % mu = [0 0 0 1 0 dtheta]'; % mean (mu)
