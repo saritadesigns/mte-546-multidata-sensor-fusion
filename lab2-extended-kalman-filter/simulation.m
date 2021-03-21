@@ -213,9 +213,10 @@ title('Sensor Model Output')
 
 figure(4)
 hold on
-plot(T(1:t),K_S1(:,1:t));
-plot(T(1:t),K_S2(:,1:t));
-plot(T(1:t),K_S3(:,1:t));
+plot(T(1:t),K_S1(1,1:t));
+plot(T(1:t),K_S2(2,1:t));
+plot(T(1:t),K_S3(3,1:t));
+legend({'Gain from x-accelerometer','Gain from y-accelerometer','Gain from gyroscope'})
 xlabel('time (sec)')
 ylabel('Kalman Gain')
 title('Kalman Gain')
