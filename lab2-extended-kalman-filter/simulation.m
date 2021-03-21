@@ -39,7 +39,7 @@ tend2 = tstart2+range;
 
 dtheta = pi/3;
 
-trajectory = 2;
+trajectory = 3;
 if trajectory==1
     %Horizontal Line
     x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
@@ -185,7 +185,7 @@ for t=2:length(T)
     K_S3(:,t) = K(:,3);
     
 %% Decision Fusion
-    [rotatingDecision(t), probabilityRotation(t)] = decision_fusion(y(:,t),mu_S(3,t),K_S3(3,t));
+    [rotatingDecision(t), probabilityRotation(t)] = decision_fusion(trajectory,y(:,t),mu_S(3,t),K_S3(3,t));
     
 end
 
@@ -245,6 +245,7 @@ hold on
 plot(T(1:t),rotatingDecision(1:t), '*:', 'Color', '#D95319');
 plot(T(1:t),probabilityRotation(1:t), '*:', 'Color', '#5A4897');
 hold off
+ylim([0 1])
 xlabel('time')
 ylabel('Rotation')
 legend({'Rotation Decision','Probability of Rotation'})
