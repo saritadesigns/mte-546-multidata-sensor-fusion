@@ -11,12 +11,15 @@ w_xA = 0.1;
 w_yA = 0.1;
 w_EKF = 0.4;
 w_K = 0.4;
+%w_gyro = 0;
 
 mu_weighted = (mu_xAccel.*w_xA + mu_yAccel.*w_yA + mu_EKF.*w_EKF + mu_KGyro.*w_K);
 [maxVal,i] = max(mu_weighted);
 if i==1
+    %notRotating
     rotationDecision=0;
 else
+    %rotating
     rotationDecision=1;
 end
 
