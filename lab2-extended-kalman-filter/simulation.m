@@ -239,7 +239,7 @@ ylabel('angular velocity (rad/sec)')
 title('Gyroscope Sensor Model Output')
 
 figure(6)
-plot(T(1:t),rotatingDecision(t), 'm+:');
+plot(T(1:t),rotatingDecision(1:t), 'm+:');
 xlabel('time')
 ylabel('Rotating Decision')
 title('Deiciosn Fusion Output')
