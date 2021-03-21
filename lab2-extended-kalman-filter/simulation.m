@@ -39,7 +39,7 @@ tend2 = tstart2+range;
 
 dtheta = pi/3;
 
-trajectory = 1;
+trajectory = 3;
 if trajectory==1
     %Horizontal Line
     x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
@@ -188,58 +188,58 @@ for t=2:length(T)
 end
 
 %% Plot 
-figure(1)
-axis equal
-hold on
-plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
-plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
-plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
-
-legend({'actual position','noisy position','estimated position (EKF)'})
-xlabel('x position')
-ylabel('y position')
-title('X and Y Positions (Motion)')
-hold off
-
-figure(2)
-hold on
-plot(T(1:t),x_ideal(3,1:t), 'ro--');
-plot(T(1:t),x(3,1:t), 'rx--');
-plot(T(1:t),mu_S(3,1:t), 'bx--');
-legend({'actual orientation','noisy orientation','estimated orientation (EKF)'})
-xlabel('time (sec)')
-ylabel('orientation (rad)')
-title('Orientation over time')
-hold off
-
-figure(3)
-hold on
-plot(T(1:t),y(1,1:t), 'g+:');
-plot(T(1:t),y(2,1:t), 'm+:');
-legend({'x-accelerometer','y-accelerometer'})
-xlabel('time (sec)')
-ylabel('acceleration (m/s^2)')
-title('Sensor Model Output')
-
-figure(4)
-hold on
-plot(T(1:t),K_S1(1,1:t));
-plot(T(1:t),K_S2(2,1:t));
-plot(T(1:t),K_S3(3,1:t));
-legend({'Gain from x-accelerometer','Gain from y-accelerometer','Gain from gyroscope'},'location','southeast')
-xlabel('time (sec)')
-ylabel('Kalman Gain')
-title('Kalman Gain')
-
-figure(5)
-plot(T(1:t),y(3,1:t), 'm+:');
-legend({'z-gyroscope'})
-xlabel('time')
-ylabel('angular velocity (rad/sec)')
-title('Gyroscope Sensor Model Output')
+% figure(1)
+% axis equal
+% hold on
+% plot(x_ideal(1,1:t),x_ideal(2,1:t), 'ro--') %state x and y (directions) for timesteps
+% plot(x(1,1:t),x(2,1:t), 'rx--') %state x and y (directions) for timesteps
+% plot(mu_S(1,1:t),mu_S(2,1:t), 'bx--')
+% 
+% legend({'actual position','noisy position','estimated position (EKF)'})
+% xlabel('x position')
+% ylabel('y position')
+% title('X and Y Positions (Motion)')
+% hold off
+% 
+% figure(2)
+% hold on
+% plot(T(1:t),x_ideal(3,1:t), 'ro--');
+% plot(T(1:t),x(3,1:t), 'rx--');
+% plot(T(1:t),mu_S(3,1:t), 'bx--');
+% legend({'actual orientation','noisy orientation','estimated orientation (EKF)'})
+% xlabel('time (sec)')
+% ylabel('orientation (rad)')
+% title('Orientation over time')
+% hold off
+% 
+% figure(3)
+% hold on
+% plot(T(1:t),y(1,1:t), 'g+:');
+% plot(T(1:t),y(2,1:t), 'm+:');
+% legend({'x-accelerometer','y-accelerometer'})
+% xlabel('time (sec)')
+% ylabel('acceleration (m/s^2)')
+% title('Sensor Model Output')
+% 
+% figure(4)
+% hold on
+% plot(T(1:t),K_S1(1,1:t));
+% plot(T(1:t),K_S2(2,1:t));
+% plot(T(1:t),K_S3(3,1:t));
+% legend({'Gain from x-accelerometer','Gain from y-accelerometer','Gain from gyroscope'},'location','southeast')
+% xlabel('time (sec)')
+% ylabel('Kalman Gain')
+% title('Kalman Gain')
+% 
+% figure(5)
+% plot(T(1:t),y(3,1:t), 'm+:');
+% legend({'z-gyroscope'})
+% xlabel('time')
+% ylabel('angular velocity (rad/sec)')
+% title('Gyroscope Sensor Model Output')
 
 figure(6)
 plot(T(1:t),rotatingDecision(1:t), '*:', 'Color', '#D95319');
 xlabel('time')
 ylabel('Rotating Decision')
-title('Deiciosn Fusion Output')
+title('Decision Fusion Output')
