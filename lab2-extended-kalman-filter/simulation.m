@@ -39,7 +39,7 @@ tend2 = tstart2+range;
 
 dtheta = pi/3;
 
-trajectory = 3;
+trajectory = 2;
 if trajectory==1
     %Horizontal Line
     x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
@@ -241,8 +241,10 @@ end
 % title('Gyroscope Sensor Model Output')
 
 figure(6)
+hold on
 plot(T(1:t),rotatingDecision(1:t), '*:', 'Color', '#D95319');
 plot(T(1:t),probabilityRotation(1:t), '*:', 'Color', '#5A4897');
+hold off
 xlabel('time')
 ylabel('Rotation')
 legend({'Rotation Decision','Probability of Rotation'})

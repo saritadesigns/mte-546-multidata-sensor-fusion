@@ -8,9 +8,9 @@ mu_gyro = fuzzy_gyroscope(y(3));
 
 w_xA = 0.1;
 w_yA = 0.1;
-w_EKF = 0.3;
+w_EKF = 0.1;
 w_K = 0.3;
-w_gyro = 0.2;
+w_gyro = 0.4;
 
 mu_weighted = (mu_xAccel.*w_xA + mu_yAccel.*w_yA + mu_EKF.*w_EKF + mu_KGyro.*w_K + mu_gyro.*w_gyro);
 
