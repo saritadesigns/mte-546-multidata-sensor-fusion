@@ -102,6 +102,8 @@ mu_S(:,1) = mu;
 
 %Decision Fusion
 rotatingDecision = zeros(length(T));
+probabilityRotation = zeros(length(T));
+
 
 %% Simulation
 for t=2:length(T)
@@ -183,7 +185,7 @@ for t=2:length(T)
     K_S3(:,t) = K(:,3);
     
 %% Decision Fusion
-    rotatingDecision(t) = decision_fusion(y(:,t),mu_S(3,t),K_S3(3,t));
+    [rotatingDecision(t), probabilityRotation(t)] = decision_fusion(y(:,t),mu_S(3,t),K_S3(3,t));
     
 end
 
@@ -240,6 +242,8 @@ end
 
 figure(6)
 plot(T(1:t),rotatingDecision(1:t), '*:', 'Color', '#D95319');
+plot(T(1:t),probabilityRotation(1:t), '*:', 'Color', '#5A4897');
 xlabel('time')
-ylabel('Rotating Decision')
+ylabel('Rotation')
+legend({'Rotation Decision','Probability of Rotation'})
 title('Decision Fusion Output')

@@ -12,7 +12,10 @@ w_EKF = 0.3;
 w_K = 0.3;
 w_gyro = 0.2;
 
-mu_weighted = (mu_xAccel.*w_xA + mu_yAccel.*w_yA + mu_EKF.*w_EKF + mu_KGyro.*w_K);
+mu_weighted = (mu_xAccel.*w_xA + mu_yAccel.*w_yA + mu_EKF.*w_EKF + mu_KGyro.*w_K + mu_gyro.*w_gyro);
+
+rotationDecision = mu_weighted(2);
+
 [maxVal,i] = max(mu_weighted);
 if i==1
     %notRotating

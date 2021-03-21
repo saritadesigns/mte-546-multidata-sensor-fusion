@@ -1,4 +1,4 @@
-function [rotationDecision] = decision_fusion(y,EKF_orientation,K_gyro)
+function [rotationDecision,probabilityRotation] = decision_fusion(y,EKF_orientation,K_gyro)
 
 % get mu = [notRotating;rotating] matrices for all inputs, then fuze
 [mu_xAccel, mu_yAccel] = fuzzy_accelerometer(y(1),y(2));
@@ -13,6 +13,9 @@ w_K = 0.3;
 w_gyro = 0.2;
 
 mu_weighted = (mu_xAccel.*w_xA + mu_yAccel.*w_yA + mu_EKF.*w_EKF + mu_KGyro.*w_K + mu_gyro.*w_gyro);
+
+probabilityRotation = mu_weighted(2);
+
 [maxVal,i] = max(mu_weighted);
 if i==1
     %notRotating
