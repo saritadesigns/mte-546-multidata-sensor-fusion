@@ -1,0 +1,10 @@
+function [mu] = fuzzy_EKF(orientation)
+low = 0;
+mid = 0;
+high = 0;
+
+mu_original = 0;
+mu_rotating = 0;
+mu_r
+end
+

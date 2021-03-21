@@ -100,6 +100,9 @@ K_S2(:,1) = 0;
 K_S3(:,1) = 0;
 mu_S(:,1) = mu;
 
+%Decision Fusion
+rotatingDecision = zeros(length(T));
+
 %% Simulation
 for t=2:length(T)
     e = RE*sqrt(Re)*randn(n,1);
@@ -180,7 +183,7 @@ for t=2:length(T)
     K_S3(:,t) = K(:,3);
     
 %% Decision Fusion
-    rotatingDecision = decision_fusion(y(:,t),)
+    rotatingDecision(t) = decision_fusion(y(:,t),mu_S(3,t),K_S3(3,t));
     
 end
 
@@ -234,3 +237,10 @@ legend({'z-gyroscope'})
 xlabel('time')
 ylabel('angular velocity (rad/sec)')
 title('Gyroscope Sensor Model Output')
+
+figure(6)
+plot(T(1:t),rotatingDecision(t), 'm+:');
+legend({'z-gyroscope'})
+xlabel('time')
+ylabel('Rotating Decision')
+title('GDeiciosn Fusion Output')
