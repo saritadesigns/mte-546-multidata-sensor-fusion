@@ -38,17 +38,17 @@ tstart2 = 70;
 tend2 = tstart2+range;
 
 dtheta = pi/3;
-% Horizontal Line
+% % Horizontal Line
 % x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
 % mu = [0 0 0 1 0 dtheta]'; % mean (mu)
 
-% % Vertical Line
-x0 = [0 0 0 0 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
-mu = [0 0 0 0 1 dtheta]'; % mean (mu)
+% % % Vertical Line
+% x0 = [0 0 0 0 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+% mu = [0 0 0 0 1 dtheta]'; % mean (mu)
 
 % Angled Line
-% x0 = [0 0 0 1 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 1 1 dtheta]'; % mean (mu)
+x0 = [0 0 0 1 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+mu = [0 0 0 1 1 dtheta]'; % mean (mu)
 
 %% Motion: CIRCLE
 
@@ -111,11 +111,11 @@ for t=2:length(T)
     isRotating = 0;
     if t>tstart1 && t<tend1
         A = Arotating;
-        isRotating = 0;
+        isRotating = 1;
     end
     if t>=tend1 && t<tstart2
         A = Aconstant;
-        isRotating = 1;
+        isRotating = 0;
     end
     if t>=tstart2 && t<tend2
         A = Arotatingback;
@@ -216,7 +216,7 @@ hold on
 plot(T(1:t),K_S1(1,1:t));
 plot(T(1:t),K_S2(2,1:t));
 plot(T(1:t),K_S3(3,1:t));
-legend({'Gain from x-accelerometer','Gain from y-accelerometer','Gain from gyroscope'})
+legend({'Gain from x-accelerometer','Gain from y-accelerometer','Gain from gyroscope'},'location','southeast')
 xlabel('time (sec)')
 ylabel('Kalman Gain')
 title('Kalman Gain')

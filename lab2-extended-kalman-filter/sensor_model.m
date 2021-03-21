@@ -12,7 +12,7 @@ function y = sensor_model(mu,isRotating,noise)
 %     y2 = 8.4711*mu(2)^-0.0472;
 
     %z-gyroscope model
-    if isRotating==0
+    if isRotating==1
 %         y3 = 8.06*10^(-4)*mu(3) + 34.2; %OG
 %         y3 = 8.06*mu(3);%OoMB
         y3= 0.6127*mu(3)^2 - 21.343*mu(3) + 189.15;%john's
