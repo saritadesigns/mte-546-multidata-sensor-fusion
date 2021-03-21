@@ -38,17 +38,21 @@ tstart2 = 70;
 tend2 = tstart2+range;
 
 dtheta = pi/3;
-% % Horizontal Line
-% x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 1 0 dtheta]'; % mean (mu)
 
-% % % Vertical Line
-% x0 = [0 0 0 0 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
-% mu = [0 0 0 0 1 dtheta]'; % mean (mu)
-
-% Angled Line
-x0 = [0 0 0 1 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
-mu = [0 0 0 1 1 dtheta]'; % mean (mu)
+trajectory = 1;
+if trajectory==1
+    %Horizontal Line
+    x0 = [0 0 0 1 0 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+    mu = [0 0 0 1 0 dtheta]'; % mean (mu)
+elseif trajectory==2
+    % Vertical Line
+    x0 = [0 0 0 0 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+    mu = [0 0 0 0 1 dtheta]'; % mean (mu)
+elseif trajectory==3
+    % Angled Line
+    x0 = [0 0 0 1 1 dtheta]'; %initial state [x,y,theta,dx,dy,dtheta]
+    mu = [0 0 0 1 1 dtheta]'; % mean (mu)
+end
 
 %% Motion: CIRCLE
 
@@ -95,6 +99,9 @@ K_S1(:,1) = 0;
 K_S2(:,1) = 0;
 K_S3(:,1) = 0;
 mu_S(:,1) = mu;
+
+%Decision Fusion
+rotatingDecision = zeros(length(T));
 
 %% Simulation
 for t=2:length(T)
@@ -174,6 +181,9 @@ for t=2:length(T)
     K_S1(:,t) = K(:,1);
     K_S2(:,t) = K(:,2);
     K_S3(:,t) = K(:,3);
+    
+%% Decision Fusion
+    rotatingDecision(t) = decision_fusion(y(:,t),mu_S(3,t),K_S3(3,t));
     
 end
 
